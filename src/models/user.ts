@@ -38,7 +38,7 @@ export async function transfer(from: Number, to: Number, amount: Number) {
       { $inc: { balance: amount } },
       opts
     );
-    if (A !== null && A.balance < 0   ) {
+    if (A !== null && A.balance < 0 || B ===null ) {
       // If A would have negative balance, fail and abort the transaction
       // `session.abortTransaction()` will undo the above `findOneAndUpdate()`
       throw new Error("Insufficient funds" );

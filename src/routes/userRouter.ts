@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UserController } from "../controllers/userController";
+import { body } from "express-validator";
 import { checkAuth } from "../middleware/jwt-config";
 
 export class userRoutes {
@@ -11,11 +12,20 @@ export class userRoutes {
   }
 
   routes() {
-    this.router.post("/register", this.userController.registerUser);
-    this.router.post("/login", this.userController.authenticateUser);
+    this.router.post(
+      "/register",
+      [body("mobile").isMobilePhone("ar-EG")],
+      this.userController.registerUser
+    );
+    this.router.post(
+      "/login",
+      [body("mobile").isMobilePhone("ar-EG")],
+      this.userController.authenticateUser
+    );
     this.router.post(
       "/transfer",
       checkAuth,
+      [body("from").isMobilePhone("ar-EG"), body("to").isMobilePhone("ar-EG")],
       this.userController.transferBalance
     );
   }
