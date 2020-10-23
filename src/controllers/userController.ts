@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { IUser, User, transfer } from "../models/user";
+import { validationResult } from "express-validator";
+
 export class UserController {
   constructor() {}
   //register user
@@ -9,6 +11,9 @@ export class UserController {
     const name = req.body.name;
     const password = req.body.password;
     const mobile = req.body.mobile;
+    //validate input
+    this.validateInput(req);
+
     bcrypt.hash(password, 10).then((hashedPass) => {
       const newUser = new User({
         name: name,
@@ -38,6 +43,8 @@ export class UserController {
     res: Response,
     next: NextFunction
   ) => {
+    this.validateInput(req);
+
     let currentUser: IUser;
     User.findOne({ mobile: req.body.mobile })
       .then((user): any => {
@@ -77,15 +84,34 @@ export class UserController {
 
   //transfer balance
 
-  public transferBalance = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  public transferBalance = (req: any, res: Response, next: NextFunction) => {
+    this.validateInput(req);
     transfer(req.body.from, req.body.to, req.body.balance)
       .then((result) => {
-        res.status(200).json(result);
+        if (req.body.from != req.userData.mobile) {
+          const error = new Error("Mobile Number is not correct");
+          throw error;
+        }
+        res.status(200).json({
+          message: `transfer Process done successfuly. your currnt balance is `,
+          result: result,
+        });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        res.status(500).json({
+          message: "transfer process failed please try again",
+          err: err,
+        });
+        console.log(err);
+      });
   };
+
+  private validateInput(req: Request) {
+    const errors = validationResult(req);
+    console.log(errors.array());
+    if (!errors.isEmpty()) {
+      const error = new Error("validation failed! please enter valid data");
+      throw error;
+    }
+  }
 }

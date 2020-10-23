@@ -1,4 +1,4 @@
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import { userRoutes } from "./routes/userRouter";
