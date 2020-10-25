@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { IUser, User, transfer } from "../models/user";
+import { IUser, User, } from "../models/user";
 import { validationResult } from "express-validator";
 
 export class UserController {
@@ -82,30 +82,7 @@ export class UserController {
       });
   };
 
-  //transfer balance
-
-  public transferBalance = (req: any, res: Response, next: NextFunction) => {
-    this.validateInput(req);
-    transfer(req.body.from, req.body.to, req.body.balance)
-      .then((result) => {
-        if (req.body.from != req.userData.mobile) {
-          const error = new Error("Mobile Number is not correct");
-          throw error;
-        }
-        res.status(200).json({
-          message: `transfer Process done successfuly. your currnt balance is `,
-          result: result,
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "transfer process failed please try again",
-          err: err,
-        });
-        console.log(err);
-      });
-  };
-
+  
   private validateInput(req: Request) {
     const errors = validationResult(req);
     console.log(errors.array());
