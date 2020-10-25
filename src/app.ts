@@ -35,7 +35,7 @@ class Server {
   private mongo() {
     mongoose
       .connect(
-        // "mongodb://localhost:27017/walletDataBase?retryWrites=false"
+        // "mongodb://localhost:27017/walletDataBase"
         "mongodb+srv://momadian183:0180421332@cluster0.zc1o9.mongodb.net/wallet?retryWrites=true"
       )
       .then(() => console.log("DB Connected ..."))
