@@ -22,11 +22,5 @@ export class userRoutes {
       [body("mobile").isMobilePhone("ar-EG")],
       this.userController.authenticateUser
     );
-    this.router.post(
-      "/transfer",
-      checkAuth,
-      [body("from").isMobilePhone("ar-EG"), body("to").isMobilePhone("ar-EG")],
-      this.userController.transferBalance
-    );
   }
 }
